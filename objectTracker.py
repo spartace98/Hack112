@@ -8,41 +8,69 @@ class ballTracker(object):
 	# feeding a single frame into tracker
 	def __init__(self, img):
 		self.img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) # image array
-		self.orangeLower = np.array([0, 180, 220])
-		self.orangeUpper = np.array([10, 220, 250])
+		self.orangeLower = np.array([0, 0, 0])
+		self.orangeUpper = np.array([40, 40, 40])
+		# cv2.imshow("filter", self.img)
+		# cv2.waitKey(0)
 		# print(self.img.shape)
 		self.rows, self.cols, _ = self.img.shape
 
 	# applying a gaussian blur
 	def gaussianBlur(self):
-		pass
+		blurred_img = cv2.GaussianBlur(self.img, (15, 15), 0)
+		return blurred_img
 
 	# isolate the color
 	def filterImage(self):
-		# for row in range(self.rows):
-		# 	for col in range(self.cols):
-		# 		if self.img[row][col] in self
-
-		mask = cv2.inRange(self.img, self.orangeLower, self.orangeUpper)
-		mask = cv2.resize(mask, (300, 300))
-		# for i in range(self.rows):
-		# 	for j in range(self.cols):
-		# 		pixel = self.img[i][j]
-		# 		# print(pixel)
-		# 		if self.orangeLower[0]<pixel[0]<self.orangeUpper[0]\
-		# 			and self.orangeLower[1]<pixel[1]<self.orangeUpper[1]\
-		# 			and self.orangeLower[2]<pixel[2]<self.orangeUpper[2]:
-		# 			self.img[i][j] = np.array([0, 0, 0])
-
-		cv2.imshow("mask", mask)
-		cv2.waitKey(0)
+		blurred_img = self.gaussianBlur()
+		mask = cv2.inRange(blurred_img, self.orangeLower, self.orangeUpper)
+		return mask
 
 	def positionTracker(self):
 		# returning the x, y coordinate of the object
-		pass
+		Xvals = []
+		Yvals = []
+		mask = self.filterImage()
 
-img = cv2.imread("orangeBall.jpg")
-img = cv2.resize(img, (300, 300))
-# cv2.imshow("original", img)
-tracker = ballTracker(img)
-tracker.filterImage()
+		for row in range(self.rows):
+			for col in range(self.cols):
+				pixel = mask[row][col]
+				if pixel != 0:
+					Xvals.append(col)
+					Yvals.append(row)
+		# if there are no orange ball found
+		if Xvals == [] or Yvals == []:
+			return None
+		else:
+			x0, x1 = min(Xvals), max(Xvals)
+			y0, y1 = min(Yvals), max(Yvals)
+			return x0, y0, x1, y1
+
+	# drawing the corners on the image provided
+	# so that it wont be drawing on the filtered image
+	def draw(self, img, corners):
+		x0, y0, x1, y1 = corners
+		c1 = (x0, y0)
+		c2 = (x1, y0)
+		c3 = (x1, y1)
+		c4 = (x0, y1)
+		cv2.line(img, c1, c2, (0,255,0), 10)
+		cv2.line(img, c2, c3, (0,255,0), 10)
+		cv2.line(img, c3, c4, (0,255,0), 10)
+		cv2.line(img, c4, c1, (0,255,0), 10)
+		# img = cv2.resize(img, (300, 300))
+		# cv2.imshow("original", img)
+		# cv2.waitKey(10)
+		posX, posY = (x0+x1)//2, (y0+y1)//2
+		return img
+
+# img = cv2.imread("orangeBall.jpg")
+# # img = cv2.resize(img, (300, 300))
+# # cv2.imshow("original", img)
+# tracker = ballTracker(img)
+# corners = tracker.positionTracker()
+# print(corners)
+# img = tracker.draw(img, corners)
+
+
+
