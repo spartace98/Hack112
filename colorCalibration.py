@@ -34,6 +34,8 @@ class colorCalibration(object):
 cam = cv2.VideoCapture(0)
 ret,img = cam.read()
 calibration = colorCalibration(img)
-print(calibration.returnBounds())
+filtered_img = calibration.img
+img = cv2.imshow("filter", filtered_img)
+cv2.waitKey(60000)
 
 

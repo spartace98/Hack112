@@ -22,7 +22,8 @@ while(True):
 
     # IF NO CORNERS ARE DETECTED
     else:
-        cv2.imshow('frame', frame)
+        img = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        cv2.imshow('frame', img)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
