@@ -8,7 +8,7 @@ cam = cv2.VideoCapture(0)
 
 while(True):
     ret, frame = cam.read()
-    frame = cv2.resize(frame, (200, 200))
+    frame = cv2.resize(frame, (500, 500))
     # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     # INITIALISING APRIL TAG DETECTOR
     tracker = ballTracker(frame)

@@ -8,8 +8,8 @@ class ballTracker(object):
 	# feeding a single frame into tracker
 	def __init__(self, img):
 		self.img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) # image array
-		self.orangeLower = np.array([90, 165, 160])
-		self.orangeUpper = np.array([120, 200, 170])
+		self.orangeLower = np.array([100, 160, 80])
+		self.orangeUpper = np.array([130, 220, 120])
 		# cv2.imshow("filter", self.img)
 		# cv2.waitKey(0)
 		# print(self.img.shape)
